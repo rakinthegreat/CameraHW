@@ -5,8 +5,8 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "com.vibhorsrv.cameraids"
-        minSdkVersion 28
+        applicationId 'com.rakin.vibhorcameraids'
+        minSdkVersion 20
         targetSdkVersion 30
         versionCode 11
         versionName "1.1"

@@ -1,4 +1,4 @@
-package com.vibhorsrv.cameraids;
+package com.rakin.vibhorcameraids;
 
 import android.content.Context;
 import android.content.Intent;

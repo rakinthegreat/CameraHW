@@ -1,4 +1,4 @@
-package com.vibhorsrv.cameraids;
+package com.rakin.vibhorcameraids;
 
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
@@ -13,6 +13,7 @@ import java.util.*;
 
 /**
  * Created by Vibhor on 23/09/2020
+ * Modified by Rakin on 27/09/2020
  */
 public class CamerasFinder {
     private final Map<String, Camera> map = new LinkedHashMap<>();
@@ -42,6 +43,8 @@ public class CamerasFinder {
                             cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_MODES),
                             cameraCharacteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE),
                             getRawSizes(cameraCharacteristics),
+                            getJpegSizes(cameraCharacteristics),
+                            getYUVSizes(cameraCharacteristics),
                             getSupportedHWlevel(cameraCharacteristics),
                             cameraCharacteristics.getPhysicalCameraIds()
                     );
@@ -160,15 +163,27 @@ public class CamerasFinder {
 
     }
 
+    private Size[] getYUVSizes(CameraCharacteristics cameraCharacteristics) {
+        StreamConfigurationMap streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+        return streamConfigurationMap.getOutputSizes(ImageFormat.YUV_420_888);
+
+    }
+
+    private Size[] getJpegSizes(CameraCharacteristics cameraCharacteristics) {
+        StreamConfigurationMap streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+        return streamConfigurationMap.getOutputSizes(ImageFormat.JPEG);
+
+    }
+
     private String getSupportedHWlevel(CameraCharacteristics cameraCharacteristics) {
         return hwLevelName(cameraCharacteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL));
     }
 
     private String hwLevelName(int level) {
-        return level == 0 ? "LIMITED"
-                : level == 1 ? "FULL"
-                : level == 2 ? "LEGACY"
-                : level == 3 ? "3"
+        return level == 0 ? "LIMITED COMPATIBILITY"
+                : level == 1 ? "FULL\n\t\t\t (GCAM COMPATIBLE)"
+                : level == 2 ? "LEGACY \n\t\t\t (GCAM INCOMPATIBLE)"
+                : level == 3 ? "LEVEL3 \n\t\t\t (BEST GCAM COMPATIBILITY)"
                 : level == 4 ? "EXTERNAL"
                 : "";
     }
@@ -192,7 +207,7 @@ public class CamerasFinder {
     public String getResultString() {
         StringBuilder sb = new StringBuilder();
         sb.append(Build.BRAND).append(", ").append(Build.MODEL).append(", ").append(Build.MANUFACTURER).append(", ").append(Build.DEVICE);
-        setFileName("CameraIDs-".concat(sb.toString().replace(", ", "-")));
+        setFileName("CameraHW-".concat(sb.toString().replace(", ", "-")));
         sb.append("\n\n");
         sb.append("Android ").append(Build.VERSION.RELEASE).append(" - ").append(System.getProperty("os.version"));
         sb.append("\n");
@@ -200,7 +215,7 @@ public class CamerasFinder {
         scanAllCameras(mCameraManager);
         try {
             sb.append("\n===============\n");
-            sb.append("\nCamera IDs visible to Apps = ");
+            sb.append("\nCamera IDs visible to Normal Apps = ");
             sb.append(Arrays.toString(mCameraManager.getCameraIdList()));
             sb.append("\n\n===============\n");
             sb.append("All Cameras IDs = ").append(map.keySet()).append("\n");

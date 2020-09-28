@@ -1,4 +1,4 @@
-package com.vibhorsrv.cameraids;
+package com.rakin.vibhorcameraids;
 
 import android.util.Size;
 import android.util.SizeF;
@@ -19,6 +19,8 @@ public class Camera {
     private final float aperture;
     private final int[] aeModes;
     private final Size[] rawSizes;
+    private final Size[] jpegSizes;
+    private final Size[] yuvSizes;
     private final SizeF sensorSize;
     private final Double angleOfView;
     private final boolean flashSupported;
@@ -27,7 +29,7 @@ public class Camera {
     private String type = "";
     private String name = "";
 
-    public Camera(String id, boolean isFront, float focalLength, float aperture, SizeF sensorSize, double angleOfView, int[] aeModes, boolean flashSupported, Size[] rawSizes, String supportedHardwareLevel, Set<String> physicalIds) {
+    public Camera(String id, boolean isFront, float focalLength, float aperture, SizeF sensorSize, double angleOfView, int[] aeModes, boolean flashSupported, Size[] rawSizes, Size[] jpegSizes, Size[] yuvSizes, String supportedHardwareLevel, Set<String> physicalIds) {
         this.id = id;
         this.focalLength = focalLength;
         this.aperture = aperture;
@@ -36,6 +38,8 @@ public class Camera {
         this.aeModes = aeModes;
         this.flashSupported = flashSupported;
         this.rawSizes = rawSizes;
+        this.jpegSizes = jpegSizes;
+        this.yuvSizes = yuvSizes;
         this.supportedHardwareLevel = supportedHardwareLevel;
         this.isFront = isFront;
         this.physicalIds = physicalIds;
@@ -96,6 +100,14 @@ public class Camera {
         return rawSizes;
     }
 
+    public Size[] getJpegSizes() {
+        return jpegSizes;
+    }
+
+    public Size[] getYUVSizes() {
+        return yuvSizes;
+    }
+
     public SizeF getSensorSize() {
         return sensorSize;
     }
@@ -116,6 +128,8 @@ public class Camera {
     public String toString() {
         return "" + type + (isFront ? "FRONT" : "BACK") + "  " + "ID" + '[' + id + "] " + name + (physicalIds.isEmpty() ? "" : " = ID" + '[' + physicalIds.toString().replace(", ", " + ") + ']') +
                 "\n\t\t\t" +
+                "SupportedHardwareLevel = " + supportedHardwareLevel +
+                "\n\t\t\t" +
                 "FocalLength = " + focalLength +
                 "\n\t\t\t" +
                 "Aperture = " + aperture +
@@ -130,7 +144,16 @@ public class Camera {
                 "\n\t\t\t" +
                 "RAW_SENSOR sizes = " + Arrays.toString(rawSizes) +
                 "\n\t\t\t" +
-                "SupportedHardwareLevel = " + supportedHardwareLevel +
+                "\n_______________\n" +
+                "YUV_420_888 sizes = " + Arrays.deepToString(yuvSizes) +
+                "\n\t\t\t" +
+                "\n_______________\n" +
+                "JPEG sizes = " + Arrays.toString(jpegSizes) +
+                "\n\n" +
+                "\n\t\t\t" +
+                "\n\t\t\t" +
+                "\n===============\n" +
+                "\n\t\t\t" +
                 "\n\n"
                 ;
     }
